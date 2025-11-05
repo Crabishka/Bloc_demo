@@ -1,5 +1,6 @@
 import 'package:demo/di/injection.dart';
 import 'package:demo/feature/favourites/bloc/favourites_bloc.dart';
+import 'package:demo/root/connectivity_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,6 +16,7 @@ class GlobalBloc extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<FavouritesBLoC>(create: (_) => getIt<FavouritesBLoC>()..add(const FavouritesEvent.update())),
+        BlocProvider<ConnectivityBloc>(create: (_) => getIt<ConnectivityBloc>()),
       ],
       child: child,
     );

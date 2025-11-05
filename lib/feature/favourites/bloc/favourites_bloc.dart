@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:demo/feature/favourites/data/favourites_repository.dart';
 import 'package:demo/models/article/article.dart';
-
+import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -34,9 +34,14 @@ abstract class FavouritesState with _$FavouritesState {
 @Singleton()
 class FavouritesBLoC extends Bloc<FavouritesEvent, FavouritesState> {
   FavouritesBLoC({required this.favouritesRepository}) : super(const InitialFavouritesState()) {
-    on<AddFavouritesBlocEvent>(_add);
-    on<RemoveFavouritesBlocEvent>(_remove);
-    on<UpdateFavouritesBlocEvent>(_update);
+    on<FavouritesEvent>(
+      (event, emit) => event.map<Future<void>>(
+        add: (event) => _add(event, emit),
+        remove: (event) => _remove(event, emit),
+        update: (event) => _update(event, emit),
+      ),
+      // transformer: bloc_concurrency.droppable(),
+    );
   }
 
   final IFavouritesRepository favouritesRepository;

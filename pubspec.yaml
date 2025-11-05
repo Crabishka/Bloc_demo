@@ -19,6 +19,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   retrofit: ^4.9.0
   json_annotation: ^4.9.0
+  bloc_concurrency: ^0.3.0
   shared_preferences: ^2.5.3
   bloc: ^9.0.0
   get_it: ^7.7.0
@@ -31,6 +32,7 @@ dependencies:
   skeletonizer:
   freezed_annotation: ^3.1.0
   cupertino_icons: ^1.0.8
+  connectivity_plus: ^6.0.0
 
 dev_dependencies:
   flutter_test:

@@ -17,6 +17,7 @@ import 'package:demo/feature/article/data/article_service.dart' as _i508;
 import 'package:demo/feature/favourites/bloc/favourites_bloc.dart' as _i128;
 import 'package:demo/feature/favourites/data/favourites_repository.dart'
     as _i813;
+import 'package:demo/root/connectivity_bloc.dart' as _i738;
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -30,6 +31,7 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
     gh.factory<_i1039.CategoryBloc>(() => _i1039.CategoryBloc());
+    gh.singleton<_i738.ConnectivityBloc>(() => _i738.ConnectivityBloc());
     gh.lazySingleton<_i361.Dio>(() => appModule.dio());
     gh.lazySingleton<_i813.IFavouritesRepository>(
       () => _i813.LocalFavouriteRepository(),
