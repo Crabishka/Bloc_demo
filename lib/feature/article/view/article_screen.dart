@@ -6,6 +6,7 @@ import 'package:demo/feature/article/bloc/all_articles_bloc.dart';
 import 'package:demo/feature/article/bloc/category_bloc.dart';
 import 'package:demo/uikit/article_card.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class ArticlesScreen extends StatelessWidget {
   const ArticlesScreen({super.key});
@@ -84,7 +85,31 @@ class _CategoriesList extends StatelessWidget {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         if (state is! DataCategoryState) {
-          return const SizedBox(height: 44, child: Center(child: CircularProgressIndicator()));
+          return SizedBox(
+            height: 44,
+            child: Skeletonizer(
+              enabled: true,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                children: [
+                  for (int i = 0; i < 8; i++)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Container(
+                        height: 36,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(color: Theme.of(context).dividerColor),
+                        ),
+                        child: const Center(child: Text('Категория')),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
         }
 
         final categories = state.categories;
@@ -126,7 +151,17 @@ class _ArticlesList extends StatelessWidget {
     return BlocBuilder<ArticleBloc, ArticleState>(
       builder: (context, state) {
         if (state is LoadingArticleState) {
-          return const Center(child: CircularProgressIndicator());
+          return Skeletonizer(
+            enabled: true,
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              itemCount: 6,
+              separatorBuilder: (_, __) => const Divider(height: 16),
+              itemBuilder: (context, i) {
+                return const _SkeletonArticleCard();
+              },
+            ),
+          );
         }
         if (state is FailedArticleState) {
           return Center(child: Text(state.message));
@@ -169,6 +204,58 @@ class _ArticlesList extends StatelessWidget {
         }
         return const SizedBox.shrink();
       },
+    );
+  }
+}
+
+class _SkeletonArticleCard extends StatelessWidget {
+  const _SkeletonArticleCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Container(width: 110, height: 80, color: Theme.of(context).colorScheme.surfaceVariant),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(height: 18, width: double.infinity, color: Theme.of(context).colorScheme.surfaceVariant),
+                  const SizedBox(height: 6),
+                  Container(height: 14, width: double.infinity, color: Theme.of(context).colorScheme.surfaceVariant),
+                  const SizedBox(height: 4),
+                  Container(
+                    height: 14,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    color: Theme.of(context).colorScheme.surfaceVariant,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.access_time, size: 14, color: Theme.of(context).disabledColor),
+                      const SizedBox(width: 4),
+                      Container(height: 12, width: 80, color: Theme.of(context).colorScheme.surfaceVariant),
+                      const Spacer(),
+                      Container(height: 12, width: 60, color: Theme.of(context).colorScheme.surfaceVariant),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:demo/models/article/article.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:demo/feature/favourites/bloc/favourites_bloc.dart';
 
 class DetailArticleScreen extends StatelessWidget {
   final Article article;
@@ -14,7 +16,30 @@ class DetailArticleScreen extends StatelessWidget {
     final String sourceText = article.articleSource.name ?? '';
 
     return Scaffold(
-      appBar: AppBar(title: Text(article.title, maxLines: 1, overflow: TextOverflow.ellipsis)),
+      appBar: AppBar(
+        title: Text(article.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        actions: [
+          BlocBuilder<FavouritesBLoC, FavouritesState>(
+            builder: (context, state) {
+              final isFav = state is DataFavouritesState &&
+                  state.articles.any((a) => a.title == article.title);
+              return IconButton(
+                tooltip: isFav ? 'Убрать из избранного' : 'В избранное',
+                icon: Icon(isFav ? Icons.favorite : Icons.favorite_border,
+                    color: isFav ? Colors.redAccent : null),
+                onPressed: () {
+                  final bloc = context.read<FavouritesBLoC>();
+                  if (isFav) {
+                    bloc.add(FavouritesEvent.remove(article: article));
+                  } else {
+                    bloc.add(FavouritesEvent.add(article: article));
+                  }
+                },
+              );
+            },
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

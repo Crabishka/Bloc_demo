@@ -25,6 +25,6 @@ class RootScreen extends StatelessWidget {
   }
 
   void _onItemTapped(int index) {
-    shell.goBranch(index, initialLocation: index != shell.currentIndex);
+    shell.goBranch(index, initialLocation: false);
   }
 }
